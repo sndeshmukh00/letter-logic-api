@@ -2,8 +2,10 @@ const express = require("express");
 const connectDB = require("./config/db");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
-const config = require("config");
+// const config = require("config");
+const dotenv = require("dotenv");
 
+dotenv.config();
 const app = express();
 
 // Connect Database

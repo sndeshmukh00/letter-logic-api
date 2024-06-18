@@ -1,0 +1,4 @@
+{
+  "mongoURI": "mongodb+srv://letterlogics:CZvXY9VVfYFnHqXZs@letterlogics.nbuuf8ts.mongodb.net/",
+  "jwtSecret": "jwt_secret"
+}
