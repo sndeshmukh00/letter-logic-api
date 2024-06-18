@@ -4,6 +4,30 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const User = require("../models/User");
 
+// @route   Get api/coins
+// @desc    Get number of coins using user Email
+// @access  Private
+router.get("/", auth, async (req, res) => {
+  const { email } = req.query;
+
+  try {
+    // Find the user by userId
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    // get coins from the user's balance
+    const coins = user.coins;
+
+    res.json({ msg: "Coins Fetched successfully", coins: coins });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
 // @route   POST api/coins/add
 // @desc    Post number of coins using user ID
 // @access  Private
