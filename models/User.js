@@ -29,6 +29,10 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  level: {
+    type: Number,
+    default: 1,
+  },
 });
 
 module.exports = mongoose.model("user", UserSchema);

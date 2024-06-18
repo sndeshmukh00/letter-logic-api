@@ -331,6 +331,51 @@
           }
         }
       }
+    },
+    "/levels/set": {
+      "put": {
+        "tags": ["Levels"],
+        "summary": "Set Level of the user",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "JWT token"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": { "type": "string" },
+                "level": { "type": "number" }
+              },
+              "required": ["email", "level"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Coins used successfully"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
     }
   },
   "securityDefinitions": {
