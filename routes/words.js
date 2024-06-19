@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const Word = require("../models/Word");
 const DailyWord = require("../models/DailyWord");
-const generateNewKeyword = require("../utils/dailyWordKeyGenerator");
 
 // @route   POST api/words/add
 // @desc    Endpoint to add multiple words
@@ -31,7 +30,7 @@ router.post("/add", async (req, res) => {
 });
 
 // @route   POST api/words/daily/add
-// @desc    Endpoint to add multiple words
+// @desc    Endpoint to add multiple daily words
 // @access  Public
 router.post("/daily/add", async (req, res) => {
   // const words = req.body; // Expect an array of word objects
@@ -53,12 +52,17 @@ router.post("/daily/add", async (req, res) => {
 
     // Fetch the latest day key from the database
     const latestEntry = await DailyWord.findOne().sort({ day: -1 }).exec();
-    const dayString = latestEntry.day.replace("day_", "");
-    const formattedDayString = `${dayString.slice(0, 4)}-${dayString.slice(
-      4,
-      6
-    )}-${dayString.slice(6, 8)}`;
-    let latestDate = latestEntry ? new Date(formattedDayString) : new Date();
+    let latestDate;
+    if (latestEntry) {
+      const dayString = latestEntry.day.replace("day_", "");
+      const formattedDayString = `${dayString.slice(0, 4)}-${dayString.slice(
+        4,
+        6
+      )}-${dayString.slice(6, 8)}`;
+      latestDate = latestEntry ? new Date(formattedDayString) : new Date();
+    } else if (latestEntry === null) {
+      latestDate = new Date();
+    }
 
     // Iterate over the words array to create new entries
     const newEntries = words.map((wordObj, index) => {
@@ -83,6 +87,26 @@ router.post("/daily/add", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// @route   GET api/words/daily
+// @desc    Endpoint to get words by level
+// @access  Public
+router.get("/daily", async (req, res) => {
+  try {
+    const { day } = req.query;
+
+    const words = await DailyWord.findOne({ day: day });
+
+    if (!words) {
+      return res.status(404).json({ error: "No words found for this day" });
+    }
+
+    res.json({ words: words.word, meaning: words.meaning, day: words.day });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
   }
 });
 
