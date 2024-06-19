@@ -2,6 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
+const Word = require("../models/Word");
 const auth = require("../middleware/auth");
 require("dotenv").config();
 
@@ -26,6 +27,30 @@ router.put("/set", auth, async (req, res) => {
     await user.save();
 
     res.json({ message: "User level updated successfully", level: user.level });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// @route   GET api/level/words
+// @desc    Endpoint to get words by level
+// @access  Private
+router.get("/words", auth, async (req, res) => {
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const words = await Word.findOne({ level: user.level });
+
+    if (!words) {
+      return res.status(404).json({ error: "No words found for this level" });
+    }
+
+    res.json({ words: words.word });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
