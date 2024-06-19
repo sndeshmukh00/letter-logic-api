@@ -156,4 +156,77 @@ router.delete("/delete", auth, async (req, res) => {
   }
 });
 
+// @route   POST api/users/daily-data
+// @desc    Post daily challenge data
+// @access  Private
+router.post("/daily-data", auth, async (req, res) => {
+  const { email, day, row, currentRow, currentCell, gameStat } = req.body;
+  try {
+    // Find the user by email
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Check if a record for the given date already exists
+    const existingChallengeIndex = user.dailyChallenge.findIndex(
+      (challenge) => challenge.date === date
+    );
+
+    if (existingChallengeIndex !== -1) {
+      // Update existing record
+      user.dailyChallenge[existingChallengeIndex] = {
+        day,
+        row,
+        currentRow,
+        currentCell,
+        gameStat,
+      };
+    } else {
+      // Add new record
+      user.dailyChallenge.push({
+        day,
+        row,
+        currentRow,
+        currentCell,
+        gameStat,
+      });
+    }
+
+    await user.save();
+
+    res
+      .status(200)
+      .json({ message: "Daily challenge data saved successfully." });
+  } catch (error) {
+    console.error("Error saving daily challenge data:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
+// @route   GET api/users/info
+// @desc    get user info data
+// @access  Private
+router.get("/info", auth, async (req, res) => {
+  const { email } = req.query;
+
+  try {
+    // Find the user by email and project only the required fields
+    const user = await User.findOne(
+      { email },
+      "name email _id coins level streak dailyChallenge"
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error retrieving user info:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
 module.exports = router;
