@@ -19,6 +19,7 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/users", require("./routes/users"));
 app.use("/api/levels", require("./routes/levels"));
 app.use("/api/coins", require("./routes/coins"));
+app.use("/api/words", require("./routes/words")); // Mount word routes
 app.use("/api/password", require("./routes/password"));
 
 // Swagger UI
