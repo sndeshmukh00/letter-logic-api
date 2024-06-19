@@ -1,14 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const Word = require("../models/Word");
+const DailyWord = require("../models/DailyWord");
+const generateNewKeyword = require("../utils/dailyWordKeyGenerator");
 
-//
 // @route   POST api/words/add
 // @desc    Endpoint to add multiple words
-// @access  Private
+// @access  Public
 router.post("/add", async (req, res) => {
   const words = req.body; // Expect an array of word objects
-  console.log(words);
+  // console.log(words);
   // [
   //   { "word": "apple", "meaning": "a sweet, edible fruit", "level": 2 },
   //   { "word": "banana", "meaning": "a long, curved fruit with a yellow peel", "level": 1 },
@@ -22,10 +23,66 @@ router.post("/add", async (req, res) => {
     if (error.code === 11000) {
       return res
         .status(400)
-        .json({ error: "Word already exists", word: error.keyValue.word });
+        .json({ error: "Level already exists", word: error.keyValue.level });
     }
-    console.error(error.keyValue.word);
+    console.error(error.keyValue.level);
     res.status(500).send("Error creating words");
+  }
+});
+
+// @route   POST api/words/daily/add
+// @desc    Endpoint to add multiple words
+// @access  Public
+router.post("/daily/add", async (req, res) => {
+  // const words = req.body; // Expect an array of word objects
+  // console.log(words);
+  // [
+  //   { "word": "apple", "meaning": "a sweet, edible fruit", "level": 2 },
+  //   { "word": "banana", "meaning": "a long, curved fruit with a yellow peel", "level": 1 },
+  //   { "word": "cat", "level": 3 }
+  // ]
+
+  try {
+    const words = req.body;
+
+    if (!Array.isArray(words) || words.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "Invalid input, array of words expected" });
+    }
+
+    // Fetch the latest day key from the database
+    const latestEntry = await DailyWord.findOne().sort({ day: -1 }).exec();
+    const dayString = latestEntry.day.replace("day_", "");
+    const formattedDayString = `${dayString.slice(0, 4)}-${dayString.slice(
+      4,
+      6
+    )}-${dayString.slice(6, 8)}`;
+    let latestDate = latestEntry ? new Date(formattedDayString) : new Date();
+
+    // Iterate over the words array to create new entries
+    const newEntries = words.map((wordObj, index) => {
+      const newDate = new Date(latestDate);
+      newDate.setDate(latestDate.getDate() + index + 1);
+      const newDayKey = `day_${newDate
+        .toISOString()
+        .split("T")[0]
+        .replace(/-/g, "")}`;
+
+      return {
+        word: wordObj.word,
+        meaning: wordObj.meaning,
+        day: newDayKey,
+      };
+    });
+
+    // Save the new entries to the database
+    await DailyWord.insertMany(newEntries);
+
+    res.status(201).json(newEntries);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 

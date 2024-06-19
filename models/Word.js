@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const WordSchema = new mongoose.Schema({
-  word: { type: String, required: true, unique: true },
+  word: { type: String, required: true },
   meaning: { type: String, required: true },
   level: { type: Number, required: true, unique: true },
 });

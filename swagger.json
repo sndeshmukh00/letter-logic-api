@@ -490,6 +490,38 @@
           }
         }
       }
+    },
+    "/words/daily/add": {
+      "post": {
+        "tags": ["Words"],
+        "summary": "Creates daily words",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DailyWord",
+              "type": "object",
+              "properties": {
+                "words": [{ "word": "string", "meaning": "string" }]
+              },
+              "required": ["words"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Words Added successfully"
+          },
+          "400": {
+            "description": "Invalid words"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
     }
   },
   "securityDefinitions": {
@@ -520,6 +552,13 @@
       "properties": {
         "email": { "type": "string" },
         "otp": { "type": "string" }
+      }
+    },
+    "DailyWord": {
+      "type": "object",
+      "properties": {
+        "word": { "type": "string" },
+        "meaning": { "type": "string" }
       }
     }
   }
