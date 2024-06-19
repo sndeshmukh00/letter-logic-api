@@ -38,6 +38,8 @@ router.put("/set", auth, async (req, res) => {
 // @access  Private
 router.get("/words", auth, async (req, res) => {
   try {
+    const { email } = req.query;
+
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -50,7 +52,27 @@ router.get("/words", auth, async (req, res) => {
       return res.status(404).json({ error: "No words found for this level" });
     }
 
-    res.json({ words: words.word });
+    res.json({ words: words.word, meaning: words.meaning, level: user.level });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// @route   GET api/level/words
+// @desc    Endpoint to get words by level
+// @access  Public
+router.get("/public/words", async (req, res) => {
+  try {
+    const { level } = req.query;
+
+    const words = await Word.findOne({ level: level });
+
+    if (!words) {
+      return res.status(404).json({ error: "No words found for this level" });
+    }
+
+    res.json({ words: words.word, meaning: words.meaning, level: words.level });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
