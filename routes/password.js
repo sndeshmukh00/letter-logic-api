@@ -57,7 +57,7 @@ router.post("/forgot", async (req, res) => {
     let user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({ msg: "User does not exist" });
+      return res.status(400).json({ msg: "User does not exist!" });
     }
 
     const OTP = generateOTP();
