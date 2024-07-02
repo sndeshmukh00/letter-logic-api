@@ -626,7 +626,7 @@
                 "email": { "type": "string" },
                 "coins": { "type": "number" },
                 "level": { "type": "number" },
-                "dailyChallenge": { "type": "string" }
+                "dailyChallenge": { "type": "array" }
               },
               "required": ["email", "coins", "level", "dailyChallenge"]
             }
