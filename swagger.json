@@ -5,7 +5,7 @@
     "title": "API Documentation",
     "description": "API documentation for your application"
   },
-  "host": "localhost:5000",
+  "host": "localhost:5001",
   "basePath": "/api",
   "schemes": ["http"],
   "paths": {
@@ -603,8 +603,101 @@
           }
         }
       }
+    },
+    "/users/sync": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Sync User's Local Data",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "JWT token"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": { "type": "string" },
+                "coins": { "type": "number" },
+                "level": { "type": "number" },
+                "dailyChallenge": { "type": "string" }
+              },
+              "required": ["email", "coins", "level", "dailyChallenge"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data Synced successfully"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/daily/update-daily-challenge": {
+      "post": {
+        "tags": ["Coins"],
+        "summary": "Update Daily Challenge Stats",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "JWT token"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": { "type": "string" },
+                "dailyChallenge": { "type": "string" }
+              },
+              "required": ["email", "dailyChallenge"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Daily challenge updated successfully"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
     }
   },
+
   "securityDefinitions": {
     "BearerAuth": {
       "type": "apiKey",

@@ -229,4 +229,32 @@ router.get("/info", auth, async (req, res) => {
   }
 });
 
+// @route   POST api/users/sync
+// @desc    Sync local user data with the backend
+// @access  Private
+router.post("/sync", auth, async (req, res) => {
+  const { email, coins, level, dailyChallenge } = req.body;
+
+  try {
+    // Find the user by email
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Update the user's data
+    user.coins = coins;
+    user.level = level;
+    user.dailyChallenge = dailyChallenge;
+
+    await user.save();
+
+    res.status(200).json({ message: "User data synchronized successfully." });
+  } catch (error) {
+    console.error("Error synchronizing user data:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
 module.exports = router;

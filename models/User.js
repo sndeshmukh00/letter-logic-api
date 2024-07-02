@@ -1,14 +1,6 @@
 // models/User.js
 const mongoose = require("mongoose");
 
-const dailyChallengeSchema = new mongoose.Schema({
-  day: { type: String, required: true }, // Date in 'YYYYMMDD' format
-  row: [[String]], // Array of arrays of strings
-  currentRow: Number,
-  currentCell: Number,
-  gameStat: { type: String, enum: ["playing", "won", "lost"], required: true },
-});
-
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -45,7 +37,10 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  dailyChallenge: [dailyChallengeSchema], // Add dailyChallenge field
+  dailyChallenge: {
+    type: Object,
+    default: {},
+  },
 });
 
 module.exports = mongoose.model("user", UserSchema);
