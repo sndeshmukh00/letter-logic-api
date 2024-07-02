@@ -18,18 +18,11 @@ router.post("/update-daily-challenge", auth, async (req, res) => {
     }
 
     // Merge new daily challenge data with existing data
-    const updatedDailyChallenges = user.dailyChallenge.map((challenge) => {
-      const newChallenge = dailyChallenge.find(
-        (dc) => dc.day === challenge.day
-      );
-      return newChallenge ? { ...challenge, ...newChallenge } : challenge;
-    });
+    const updatedDailyChallenges = [...user.dailyChallenge];
 
-    dailyChallenge.forEach((newChallenge) => {
-      if (!updatedDailyChallenges.find((dc) => dc.day === newChallenge.day)) {
-        updatedDailyChallenges.push(newChallenge);
-      }
-    });
+    if (!user.dailyChallenge.find((dc) => dc === dailyChallenge)) {
+      updatedDailyChallenges.push(dailyChallenge);
+    }
 
     user.dailyChallenge = updatedDailyChallenges;
 

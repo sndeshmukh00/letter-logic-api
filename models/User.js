@@ -38,8 +38,8 @@ const UserSchema = new mongoose.Schema({
     default: 0,
   },
   dailyChallenge: {
-    type: Object,
-    default: {},
+    type: Array,
+    default: [],
   },
 });
 
