@@ -1,6 +1,8 @@
 const express = require("express");
-const User = require("../models/User");
 const router = express.Router();
+const auth = require("../middleware/auth");
+const User = require("../models/User");
+
 // @route   POST api/users/update-daily-challenge
 // @desc    Update individual daily challenge data
 // @access  Private
@@ -41,3 +43,5 @@ router.post("/update-daily-challenge", auth, async (req, res) => {
     res.status(500).json({ message: "Internal server error." });
   }
 });
+
+module.exports = router;
