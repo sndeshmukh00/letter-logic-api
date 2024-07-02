@@ -5,7 +5,7 @@
     "title": "API Documentation",
     "description": "API documentation for your application"
   },
-  "host": "localhost:5001",
+  "host": "letterlogic-api.vercel.app",
   "basePath": "/api",
   "schemes": ["http"],
   "paths": {
