@@ -249,8 +249,17 @@ router.post("/sync", auth, async (req, res) => {
     user.dailyChallenge = dailyChallenge;
 
     await user.save();
+    const updatedUser = await User.findOne(
+      { email },
+      "name email _id coins level streak dailyChallenge"
+    );
 
-    res.status(200).json({ message: "User data synchronized successfully." });
+    res
+      .status(200)
+      .json({
+        message: "User data synchronized successfully.",
+        user: updatedUser,
+      });
   } catch (error) {
     console.error("Error synchronizing user data:", error);
     res.status(500).json({ message: "Internal server error." });
