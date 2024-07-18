@@ -215,7 +215,7 @@ router.get("/info", auth, async (req, res) => {
     // Find the user by email and project only the required fields
     const user = await User.findOne(
       { email },
-      "name email _id coins level streak dailyChallenge"
+      "name email _id coins hints level streak dailyChallenge"
     );
 
     if (!user) {
@@ -251,7 +251,7 @@ router.post("/sync", auth, async (req, res) => {
     await user.save();
     const updatedUser = await User.findOne(
       { email },
-      "name email _id coins level streak dailyChallenge"
+      "name email _id coins hints level streak dailyChallenge"
     );
 
     res
